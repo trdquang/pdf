@@ -1,0 +1,21 @@
+.container {
+    display: flex;  
+    justify-content: space-between;  
+    /* gap: 2px;   */
+    padding: 20px;
+}
+
+.feature__box{
+    width: 200px;
+    height: 200px;
+    background-color: white;
+}
+
+.feature__box .text__box{
+    margin-top: 20%;
+    margin-left: 10%;
+}
+
+body{
+    background-color: #F0F0F0;
+}
