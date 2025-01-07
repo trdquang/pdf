@@ -5,20 +5,24 @@ document.getElementById('mergePdfs').addEventListener('click', mergePdfs);
 
 let files = [];
 
+//---xử lý thêm file 
 function handleFileSelect(event) {
   const fileList = event.target.files;
   for (const file of fileList) {
     files.push(file);
   }
+
+  //---nếu có file thì hiển thị nút merge 
   if (files.length > 0) {
     document.getElementById('mergePdfs').disabled = false;
   }
   renderPreviews();
 }
 
+
 function renderPreviews() {
   const previewContainer = document.getElementById('previewContainer');
-  previewContainer.innerHTML = '';  // Clear the previous previews
+  previewContainer.innerHTML = '';  
   files.forEach((file, index) => {
     const previewDiv = document.createElement('div');
     previewDiv.classList.add('preview');
