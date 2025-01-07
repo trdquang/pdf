@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Merge PDF Files</title>
+  <!-- Thêm Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+  <link rel="stylesheet" href="css/merge.css">
+</head>
+
+<body>
+  <div style="display: flex; margin-top: 2%;">
+    <div style="margin-left: 5%;">
+      <a href="index.html">
+        <img src="img/pdf.png" alt="" style="width: 50px;">
+      </a>
+    </div>
+    <h2 style="flex: 1; text-align: center;">PDF tools</h2>
+  </div>
+
+  <div style="text-align: center; margin-top: 5%;">
+    <!-- Thêm input để chọn nhiều file PDF -->
+    <input type="file" id="pdfInput" style="display: none;" accept=".pdf" multiple onchange="uploadPdf()">
+    <button type="button" class="btn btn-primary" style="width: 35%; height: 5%;" 
+      onclick="document.getElementById('pdfInput').click()">Tải file lên</button>
+  </div>
+
+  <!-- Hiển thị danh sách các file PDF đã tải lên -->
+  <div id="fileList" style="text-align: center; margin-top: 2%;"></div>
+
+  <!-- Nút để nối PDF -->
+  <div style="text-align: center; margin-top: 2%;">
+    <button class="btn btn-success" onclick="mergePdf()" style="width: 35%; height: 5%;">Nối PDF</button>
+  </div>
+
+  <!-- Hiển thị kết quả sau khi nối PDF -->
+  <div id="result" style="text-align: center; margin-top: 2%;"></div>
+
+  <!-- Thêm Bootstrap và jQuery -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/merge.js"></script>
+</body>
+
+</html>
