@@ -14,6 +14,7 @@
             position: relative;
             margin: 10px;
         }
+
         .btn-danger {
             position: absolute;
             top: 5px;
@@ -36,8 +37,8 @@
         <div class="row">
             <div class="col-12 text-center">
                 <h3>Upload PDFs to Merge</h3>
-                <input type="file" id="fileInput" accept="application/pdf" multiple class="form-control">
-                <button id="mergePdfs" class="btn btn-primary mt-3" disabled>Merge PDFs</button>
+                <input type="file" id="fileInput" accept="application/pdf" multiple class="form-control" >
+                <button id="mergePdfs" class="btn btn-primary mt-3" disabled >Merge PDFs</button>
             </div>
         </div>
     </div>
@@ -45,116 +46,11 @@
     <div class="container mt-5" id="pdfContainer">
         <h4>Preview:</h4>
         <div id="previewContainer" class="d-flex flex-wrap" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-        <a id="downloadLink" class="btn btn-success mt-3" style="display: none;" download="merged_pdf.pdf">Download Merged PDF</a>
+        <a id="downloadLink" class="btn btn-success mt-3" style="display: none;" download="merged_pdf.pdf">Download
+            Merged PDF</a>
     </div>
 
-    <script>
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';
-
-        document.getElementById('fileInput').addEventListener('change', handleFileSelect);
-        document.getElementById('mergePdfs').addEventListener('click', mergePdfs);
-
-        let files = [];
-
-        function allowDrop(event) {
-            event.preventDefault();
-        }
-
-        function drag(event) {
-            event.dataTransfer.setData('text', event.target.id);
-        }
-
-        function drop(event) {
-            event.preventDefault();
-            const data = event.dataTransfer.getData('text');
-            const node = document.getElementById(data);
-            event.target.closest('.preview').insertAdjacentElement('beforebegin', node);
-            reorderFiles();
-        }
-
-        function handleFileSelect(event) {
-            const fileList = event.target.files;
-            for (const file of fileList) {
-                files.push(file);
-            }
-            if (files.length > 0) {
-                document.getElementById('mergePdfs').disabled = false;
-            }
-            renderPreviews();
-        }
-
-        function renderPreviews() {
-            const previewContainer = document.getElementById('previewContainer');
-            previewContainer.innerHTML = '';
-            files.forEach((file, index) => {
-                const reader = new FileReader();
-                reader.onload = async function(e) {
-                    const arrayBuffer = e.target.result;
-                    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-                    const page = await pdf.getPage(1);
-                    const viewport = page.getViewport({ scale: 0.5 });
-
-                    const canvas = document.createElement('canvas');
-                    const context = canvas.getContext('2d');
-                    canvas.width = viewport.width;
-                    canvas.height = viewport.height;
-
-                    await page.render({ canvasContext: context, viewport }).promise;
-
-                    const previewDiv = document.createElement('div');
-                    previewDiv.classList.add('preview');
-                    previewDiv.draggable = true;
-                    previewDiv.id = `preview-${index}`;
-                    previewDiv.ondragstart = drag;
-
-                    const closeButton = document.createElement('button');
-                    closeButton.classList.add('btn', 'btn-danger', 'btn-sm');
-                    closeButton.innerHTML = 'X';
-                    closeButton.onclick = () => removeFile(index);
-
-                    previewDiv.appendChild(canvas);
-                    previewDiv.appendChild(closeButton);
-                    previewContainer.appendChild(previewDiv);
-                };
-                reader.readAsArrayBuffer(file);
-            });
-        }
-
-        function reorderFiles() {
-            const previewContainer = document.getElementById('previewContainer');
-            const previewDivs = previewContainer.getElementsByClassName('preview');
-            const newFilesOrder = [];
-            for (const div of previewDivs) {
-                const index = parseInt(div.id.replace('preview-', ''));
-                newFilesOrder.push(files[index]);
-            }
-            files = newFilesOrder;
-        }
-
-        function removeFile(index) {
-            files.splice(index, 1);
-            if (files.length === 0) {
-                document.getElementById('mergePdfs').disabled = true;
-            }
-            renderPreviews();
-        }
-
-        async function mergePdfs() {
-            const pdfDoc = await PDFLib.PDFDocument.create();
-            for (const file of files) {
-                const arrayBuffer = await file.arrayBuffer();
-                const donorPdfDoc = await PDFLib.PDFDocument.load(arrayBuffer);
-                const donorPages = await pdfDoc.copyPages(donorPdfDoc, donorPdfDoc.getPageIndices());
-                donorPages.forEach(page => pdfDoc.addPage(page));
-            }
-            const pdfBytes = await pdfDoc.save();
-            const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-            const url = URL.createObjectURL(blob);
-            const downloadLink = document.getElementById('downloadLink');
-            downloadLink.href = url;
-            downloadLink.style.display = 'block';
-        }
-    </script>
+    <script src="js/merge.js"></script>
 </body>
 
 </html>

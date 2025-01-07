@@ -1,53 +1,50 @@
-let pdfFiles = [];
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';
 
-function uploadPdf() {
-  const files = document.getElementById('pdfInput').files;
-  pdfFiles = Array.from(files);
+document.getElementById('fileInput').addEventListener('change', handleFileSelect);
+document.getElementById('mergePdfs').addEventListener('click', mergePdfs);
 
-  // Hiển thị tên các file PDF đã tải lên
-  const fileListDiv = document.getElementById('fileList');
-  fileListDiv.innerHTML = '<h4>Danh sách file PDF đã tải lên:</h4>';
-  
-  pdfFiles.forEach(file => {
-    const fileElement = document.createElement('p');
-    fileElement.textContent = file.name;
-    fileListDiv.appendChild(fileElement);
+let files = [];
+
+function handleFileSelect(event) {
+  const fileList = event.target.files;
+  for (const file of fileList) {
+    files.push(file);
+  }
+  if (files.length > 0) {
+    document.getElementById('mergePdfs').disabled = false;
+  }
+  renderPreviews();
+}
+
+function renderPreviews() {
+  const previewContainer = document.getElementById('previewContainer');
+  previewContainer.innerHTML = '';  // Clear the previous previews
+  files.forEach((file, index) => {
+    const previewDiv = document.createElement('div');
+    previewDiv.classList.add('preview');
+
+    // Create the title div showing the file name
+    const titleDiv = document.createElement('div');
+    titleDiv.classList.add('file-title');
+    titleDiv.innerHTML = file.name;  // Use the file name
+
+    previewDiv.appendChild(titleDiv);  // Append the title to the preview div
+    previewContainer.appendChild(previewDiv);
   });
 }
 
-async function mergePdf() {
-  if (pdfFiles.length < 2) {
-    alert('Vui lòng tải lên ít nhất 2 file PDF để nối.');
-    return;
+async function mergePdfs() {
+  const pdfDoc = await PDFLib.PDFDocument.create();
+  for (const file of files) {
+    const arrayBuffer = await file.arrayBuffer();
+    const donorPdfDoc = await PDFLib.PDFDocument.load(arrayBuffer);
+    const donorPages = await pdfDoc.copyPages(donorPdfDoc, donorPdfDoc.getPageIndices());
+    donorPages.forEach(page => pdfDoc.addPage(page));
   }
-
-  try {
-    const mergedPdf = await PDFLib.PDFDocument.create();
-
-    for (const file of pdfFiles) {
-      const arrayBuffer = await file.arrayBuffer();
-      const pdfDoc = await PDFLib.PDFDocument.load(arrayBuffer);
-
-      const copiedPages = await mergedPdf.copyPages(pdfDoc, pdfDoc.getPageIndices());
-      copiedPages.forEach((page) => mergedPdf.addPage(page));
-    }
-
-    // Tạo file PDF đã nối
-    const mergedPdfBytes = await mergedPdf.save();
-    const mergedPdfBlob = new Blob([mergedPdfBytes], { type: 'application/pdf' });
-
-    // Tạo link tải xuống
-    const downloadLink = document.createElement('a');
-    downloadLink.href = URL.createObjectURL(mergedPdfBlob);
-    downloadLink.download = 'merged.pdf';
-    downloadLink.textContent = 'Tải file PDF đã nối';
-
-    const resultDiv = document.getElementById('result');
-    resultDiv.innerHTML = '';  // Xóa nội dung cũ
-    resultDiv.appendChild(downloadLink);
-
-  } catch (error) {
-    console.error('Có lỗi khi nối PDF:', error);
-    alert('Có lỗi xảy ra trong quá trình nối PDF.');
-  }
+  const pdfBytes = await pdfDoc.save();
+  const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+  const url = URL.createObjectURL(blob);
+  const downloadLink = document.getElementById('downloadLink');
+  downloadLink.href = url;
+  downloadLink.style.display = 'block';
 }
