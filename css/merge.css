@@ -1,0 +1,23 @@
+body{
+    background-color: #F0F0F0;
+}
+
+.container__pdf {
+    display: flex;  
+    justify-content: center;
+    gap: 1%;  
+    padding: 20px;
+}
+
+
+.pdf__box{
+    width: 200px;
+    height: 200px;
+    background-color: white;
+    cursor: pointer;
+}
+
+.pdf__box .text__box{
+    margin-top: 20%;
+    margin-left: 10%;
+}
