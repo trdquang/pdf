@@ -31,11 +31,19 @@
         </div>
     </div>
 
-    <div class="container mt-5" id="pdfContainer" style="display: none;">
+    <div class="container mt-5" id="pdfContainer">
         <h4>Preview:</h4>
-        <canvas id="pdfCanvas"></canvas>
+        <!-- <canvas id="pdfCanvas"></canvas> -->
+        <div id="previewContainer" class="d-flex flex-wrap" ></div>
         <a id="downloadLink" class="btn btn-success mt-3" style="display: none;" download="pdf_with_page_numbers.pdf">Download PDF</a>
     </div>
+
+    <!-- <div class="container mt-5" id="pdfContainer">
+        <h4>Preview:</h4>
+        
+        <a id="downloadLink" class="btn btn-success mt-3" style="display: none;" download="merged_pdf.pdf">Download
+            Merged PDF</a>
+    </div> -->
 
     <script src="js/page_number.js"></script>
 </body>

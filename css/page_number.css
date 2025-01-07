@@ -1,3 +1,19 @@
 body{
     background-color: #F0F0F0;
 }
+
+.preview {
+    margin-bottom: 10px;
+    /* Khoảng cách giữa các file */
+}
+
+.file-title {
+    display: block;
+    /* Mỗi tên file chiếm một dòng riêng biệt */
+    font-size: 16px;
+    /* Kích thước chữ */
+    padding: 5px;
+    background-color: #f1f1f1;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
