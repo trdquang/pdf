@@ -24,6 +24,19 @@ async function handleFileSelect(event) {
 
 
 async function addPageNumbers() {
+    let pageStart = -1;
+    try {
+        pageStart = parseInt(document.getElementById('pageStart').value, 10)
+
+        if (pageStart < 1) {
+            alert('Số trang bắt đầu không hợp lệ');
+            return;
+        }
+    } catch (error) {
+        alert('Số trang bắt đầu không hợp lệ');
+        return;
+    }
+
     const fileInput = document.getElementById('fileInput');
     const file = fileInput.files[0];
     const arrayBuffer = await file.arrayBuffer();
@@ -34,14 +47,20 @@ async function addPageNumbers() {
 
     pages.forEach((page, index) => {
         const { width, height } = page.getSize();
-        page.drawText(`${index + 1}`, {
+
+        // page.drawText(`${index + 1}`, {
+        page.drawText(`${pageStart}`, {
             x: width - 50,
             y: 20,
             size: fontSize,
             font,
-            // color: PDFLib.rgb(0.941, 0.074, 0.235)
-            color: PDFLib.rgb(0, 0, 0)
+            color: PDFLib.rgb(0.941, 0.074, 0.235)
+            // color: PDFLib.rgb(0, 0, 0)
+            // color: PDFLib.rgb(1, 1, 0)  // Màu vàng
+
         });
+
+        pageStart++;
     });
 
     const pdfBytes = await pdfDoc.save();
@@ -49,5 +68,9 @@ async function addPageNumbers() {
     const url = URL.createObjectURL(blob);
     const downloadLink = document.getElementById('downloadLink');
     downloadLink.href = url;
+
+    let fileNameDown = "p_" + file.name;
+    downloadLink.download = fileNameDown;
+
     downloadLink.style.display = 'block';
 }
