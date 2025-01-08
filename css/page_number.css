@@ -17,3 +17,8 @@ body{
     border: 1px solid #ddd;
     border-radius: 5px;
 }
+
+label {
+    display: block;
+    text-align: left;
+}

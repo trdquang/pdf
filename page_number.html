@@ -27,9 +27,33 @@
                 <h3>Upload PDF to Add Page Numbers</h3>
                 <input type="file" id="fileInput" accept="application/pdf" class="form-control">
 
-                <div class="mt-3">
-                    <label for="pageStart">Page Start Number:</label>
-                    <input type="number" id="pageStart" class="form-control w-auto" value="1" min="1">
+                <div class="row" style="margin-top: 15px;">
+                    <!-- Chọn trang bắt đầu -->
+                    <div class="col-md-4 mb-3">
+                        <label for="pageStart" ">Page Start Number</label>
+                        <input type="number" id="pageStart" class="form-control" value="1" min="1">
+                    </div>
+
+                    <!-- Chọn vị trí đánh số trang -->
+                    <div class="col-md-4 mb-3">
+                        <label for="positionSelect">Page Number Position</label>
+                        <select id="positionSelect" class="form-control">
+                            <option value="bottom-left">Bottom Left</option>
+                            <option value="bottom-center">Bottom Center</option>
+                            <option value="bottom-right" selected>Bottom Right</option>
+                        </select>
+                    </div>
+
+                    <!-- Màu sắc -->
+                    <div class="col-md-4 mb-3">
+                        <label for="colorSelect">Page Number Color</label>
+                        <select id="colorSelect" class="form-control">
+                            <option value="red" selected>Red</option>
+                            <option value="blue">Blue</option>
+                            <option value="green">Green</option>
+                            <option value="yellow">Yellow</option>
+                        </select>
+                    </div>
                 </div>
 
                 <button id="addPageNumbers" class="btn btn-primary mt-3" disabled>Add Page Numbers</button>
@@ -40,8 +64,9 @@
     <div class="container mt-5" id="pdfContainer">
         <h4>Preview:</h4>
         <!-- <canvas id="pdfCanvas"></canvas> -->
-        <div id="previewContainer" class="d-flex flex-wrap" ></div>
-        <a id="downloadLink" class="btn btn-success mt-3" style="display: none;" download="pdf_with_page_numbers.pdf">Download PDF</a>
+        <div id="previewContainer" class="d-flex flex-wrap"></div>
+        <a id="downloadLink" class="btn btn-success mt-3" style="display: none;"
+            download="pdf_with_page_numbers.pdf">Download PDF</a>
     </div>
 
     <script src="js/page_number.js"></script>

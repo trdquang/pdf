@@ -1,3 +1,11 @@
+//----định nghĩa biến toàn cục
+// trang bắt đầu, màu sắc và vị trí
+startPage = -1;
+xPos = null;
+yPos = null;
+colorRgb = null;
+
+
 document.getElementById('fileInput').addEventListener('change', handleFileSelect);
 document.getElementById('addPageNumbers').addEventListener('click', addPageNumbers);
 
@@ -22,20 +30,68 @@ async function handleFileSelect(event) {
     }
 }
 
+function getColor(){
+    let color = document.getElementById('colorSelect').value;
+
+    switch (color) {
+        case 'blue':
+            colorRgb =  PDFLib.rgb(0, 0, 1);  // Màu xanh dương
+            break
+        case 'green':
+            colorRgb =  PDFLib.rgb(0, 1, 0);  // Màu xanh lá cây
+            break;
+        case 'yellow':
+            colorRgb =  PDFLib.rgb(1, 1, 0);  // Màu vàng
+            break;
+        case 'red':
+        default:
+            colorRgb =  PDFLib.rgb(0.941, 0.074, 0.235);  // Màu đỏ (mặc định)
+            break;
+    }
+}
+
+function getPage(){
+    try {
+        startPage = parseInt(document.getElementById('pageStart').value, 10)
+    } catch (error) {
+        startPage = -1;
+    }
+}
+
+
+function getPosition(width){
+    let position = document.getElementById('positionSelect').value;
+
+    if (position === 'bottom-left') {
+        xPos = 50;   
+        yPos = 20;  
+    } else if (position === 'bottom-center') {
+        xPos = width/2-20;  
+        yPos = 20;   
+    } else if (position === 'bottom-right') {
+        xPos = width - 50;   
+        yPos = 20;   
+    }
+}
 
 async function addPageNumbers() {
-    let pageStart = -1;
-    try {
-        pageStart = parseInt(document.getElementById('pageStart').value, 10)
-
-        if (pageStart < 1) {
-            alert('Số trang bắt đầu không hợp lệ');
-            return;
-        }
-    } catch (error) {
-        alert('Số trang bắt đầu không hợp lệ');
+    getPage();
+    getColor();
+    if(startPage < 0 || startPage == null){
+        alert('Số trang không phù hợp')
         return;
     }
+
+    // if(xPos == null || yPos == null){
+    //     alert('Vị trí không phù hợp');
+    //     return;
+    // }
+
+    if(colorRgb == null){
+        alert('Màu sắc không phù hợp');
+        return;
+    }
+
 
     const fileInput = document.getElementById('fileInput');
     const file = fileInput.files[0];
@@ -47,20 +103,19 @@ async function addPageNumbers() {
 
     pages.forEach((page, index) => {
         const { width, height } = page.getSize();
+        getPosition(width)
 
         // page.drawText(`${index + 1}`, {
-        page.drawText(`${pageStart}`, {
-            x: width - 50,
-            y: 20,
+        page.drawText(`${startPage}`, {
+            x: xPos,
+            y: yPos,
             size: fontSize,
             font,
-            color: PDFLib.rgb(0.941, 0.074, 0.235)
-            // color: PDFLib.rgb(0, 0, 0)
-            // color: PDFLib.rgb(1, 1, 0)  // Màu vàng
+            color: colorRgb
 
         });
 
-        pageStart++;
+        startPage++;
     });
 
     const pdfBytes = await pdfDoc.save();
