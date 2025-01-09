@@ -71,6 +71,9 @@ function getPosition(width){
     } else if (position === 'bottom-right') {
         xPos = width - 50;   
         yPos = 20;   
+    } else if(position === 'ecorp'){
+        xPos = width - 50; 
+        yPos = 60;
     }
 }
 
